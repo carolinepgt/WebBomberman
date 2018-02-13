@@ -9,4 +9,4 @@
 define("hostname","localhost");
 define("database","bomberman");
 define("username","root");
-define("password","1505");
+define("password","");

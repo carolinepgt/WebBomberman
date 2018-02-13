@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="http://www.iut-bm.univ-fcomte.fr/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projet tuteuré Bomberman</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/foundation.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" >
+    <script src="{{ asset('assets/js/vendor/modernizr.js') }}"></script>
+</head>
+<body>
+{% if   app.session.get('roles') is defined and  app.session.get('roles') == 'ADMIN' %}
+    {% include "navigation_admin.html.twig" %}
+{% elseif   app.session.get('roles') is defined and  app.session.get('roles') == 'PLAYER' %}
+    {% include "navigation_player.html.twig" %}
+{% else %}
+    {% include "navigation_unknown.html.twig" %}
+{% endif%}
+
+{% block contenu %}
+    Bomberman projet tut s4
+{% endblock %}
+
+<script src="{{ asset('assets/js/vendor/jquery.js') }}"></script>
+<script src="{{ asset('assets/js/foundation.min.js') }}"></script>
+<script>
+    $(document).foundation();
+</script>
+</body>
+</html>

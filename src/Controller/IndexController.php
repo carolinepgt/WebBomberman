@@ -1,7 +1,37 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: carol
- * Date: 02/02/2018
- * Time: 12:57
- */
+namespace App\Controller;
+
+use Silex\Application;
+use Silex\Api\ControllerProviderInterface;
+use Silex\ControllerCollection;   // modif version 2.0
+
+class IndexController implements ControllerProviderInterface{
+
+    public function index(Application $app)
+    {
+        if ($app['session']->get('roles') == 'PLAYER')
+            return $app->redirect($app["url_generator"]->generate("index.pagePlayer"));
+        if ($app['session']->get('roles') == 'ADMIN')
+            return $app->redirect($app["url_generator"]->generate("index.pageAdmin"));
+        //return $app["twig"]->render("backOff/backOFFICE.html.twig");
+
+        return $app["twig"]->render("accueil.html.twig");
+    }
+
+    /**
+     * Returns routes to connect to the given application.
+     *
+     * @param Application $app An Application instance
+     *
+     * @return ControllerCollection A ControllerCollection instance
+     */
+    public function connect(Application $app)
+    {
+        // TODO: Implement connect() method.
+        $index = $app['controllers_factory'];
+        $index->match("/", 'App\Controller\IndexController::index')->bind('accueil');
+        $index->match("/index", 'App\Controller\IndexController::index')->bind("index.index");
+
+        return $index;
+    }
+}
