@@ -31,6 +31,7 @@ class playerController implements ControllerProviderInterface{
         $builder->build();
         $_SESSION['phrase'] = $builder -> getPhrase();
         $phrase = $_SESSION['phrase'];
+        $app['session']->set('phrase',$phrase);
 
         return $app["twig"]->render('addPlayer.html.twig', ['phrase' => $phrase, 'image' => $builder -> inline()]);
     }
@@ -64,8 +65,7 @@ class playerController implements ControllerProviderInterface{
                 if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['adresse']))) $erreurs['adresse']="L'adresse doit être composé de 2 lettres minimum";
                 if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['ville']))) $erreurs['ville']='La ville doit être composé de 2 lettres minimum';
                 if(! is_numeric($donnees['code_postal']))$erreurs['code_postal']='Saisir une valeur numérique';
-                var_dump($_SESSION);
-                if($donnees['maPhrase'] != $_SESSION['phrase']) $erreurs['phrase']='Le captcha est incorrect';
+                if($donnees['maPhrase'] != $app['session']->get('phrase')) $erreurs['phrase']='Le captcha est incorrect';
 
                 if(! empty($erreurs))
                 {
@@ -73,6 +73,7 @@ class playerController implements ControllerProviderInterface{
                     $builder->build();
                     $_SESSION['phrase'] = $builder -> getPhrase();
                     $phrase = $_SESSION['phrase'];
+                    $app['session']->set('phrase',$phrase);
                     if($app['session']->get('roles') == 'ADMIN') {
                         return $app["twig"]->render('admin_views/creerClient.html.twig', ['donnees' => $donnees, 'erreurs' => $erreurs, 'image' => $builder->inline(), 'phrase' => $phrase]);
                     }else{
