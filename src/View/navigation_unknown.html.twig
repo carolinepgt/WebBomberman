@@ -8,6 +8,14 @@
         </li>
     </ul>
     <section class="top-bar-section">
+        <ul class="left">
+            <li class="has-dropdown"><a href="#"> Jouer au Bomberman </a>
+                <ul class="dropdown">
+                    <li><a href="{{ path('game.soloPlayer') }}"> Jouer en solo </a></li>
+                    <li><a href="{{ path('game.duoPlayer') }}"> Jouer en duo </a></li>
+                </ul>
+            </li>
+        </ul>
         <ul class="right">
             {% if   app.session.get('logged') is defined and  app.session.get('logged') == 1 %}
                 <li class="name" style="color: dodgerblue">Connecté avec le compte : {{ app.session.get('username') }}</li>

@@ -18,6 +18,14 @@ class IndexController implements ControllerProviderInterface{
         return $app["twig"]->render("accueil.html.twig");
     }
 
+    public function showPageAdmin(Application $app){
+        return $app["twig"]->render("admin_views/accueilAdmin.html.twig");
+    }
+
+    public function showPagePlayer(Application $app){
+        return $app["twig"]->render("player_views\accueilPlayer.html.twig");
+    }
+
     /**
      * Returns routes to connect to the given application.
      *
@@ -31,6 +39,8 @@ class IndexController implements ControllerProviderInterface{
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\IndexController::index')->bind('accueil');
         $index->match("/index", 'App\Controller\IndexController::index')->bind("index.index");
+        $index->match("/pageAdmin", 'App\Controller\IndexController::showPageAdmin')->bind("index.pageAdmin");
+        $index->match("/pageplayer", 'App\Controller\IndexController::showPagePlayer')->bind("index.pagePlayer");
 
         return $index;
     }

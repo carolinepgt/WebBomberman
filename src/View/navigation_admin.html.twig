@@ -1,0 +1,29 @@
+<nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name" style="text-align: center">
+            Projet Tuteuré S4
+        </li>
+        <li class="toggle-topbar menu-icon">
+            <a href="#"><span>Menu</span></a>
+        </li>
+    </ul>
+    <section class="top-bar-section">
+        <ul class="left">
+            <li class="has-dropdown"><a href="#"> Gestion des coordonnées des joueurs </a>
+                <ul class="dropdown">
+                    <li><a href=""> Voir les coordonnées des joueurs </a></li>
+                    <li><a href=""> Voir les statistiques </a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="right">
+            {% if   app.session.get('logged') is defined and  app.session.get('logged') == 1 %}
+                <li class="name" style="color: dodgerblue">Connecté avec le compte : {{ app.session.get('username') }}</li>
+                <li><a href="{{ path('user.logout')  }}">Se déconnecter</a></li>
+            {% else %}
+                <li><a href="{{ path('player.addPlayerWithNoAccount')  }}">S'inscrire</a></li>
+                <li><a href="{{ path('user.login')  }}">Se connecter</a></li>
+            {% endif %}
+        </ul>
+    </section>
+</nav>

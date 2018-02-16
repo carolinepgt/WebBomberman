@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Model\playerModel;
 use Silex\Application;
 use Silex\Api\ControllerProviderInterface;
 
@@ -19,10 +20,10 @@ class playerController implements ControllerProviderInterface{
     public function showCoordonnesPlayer(Application $app)
     {
         $user = $app['session']->get('user_id');
-        $this->clientModel = new playerModel($app);
+        $this->playerModel = new playerModel($app);
         $clientModel = $this->playerModel->getCoordonneesClientById($user);
 
-        return $app["twig"]->render('frontOff/client/showCoordonnees.html.twig',['donnees'=>$clientModel]);
+        return $app["twig"]->render('player_views/showCoordonnees.html.twig',['donnees'=>$clientModel]);
     }
 
     public function addPlayerWithNoAccount(Application $app){
@@ -30,11 +31,12 @@ class playerController implements ControllerProviderInterface{
         $builder->build();
         $_SESSION['phrase'] = $builder -> getPhrase();
         $phrase = $_SESSION['phrase'];
+
         return $app["twig"]->render('addPlayer.html.twig', ['phrase' => $phrase, 'image' => $builder -> inline()]);
     }
 
     public function validFormAddPlayerWithNoAccount(Application $app,Request $req){
-         $this->clientModel = new playerModel($app);
+         $this->playerModel = new playerModel($app);
             if (isset($_POST['username']) && isset($_POST['motdepasse']) and isset($_POST['nom']) and isset($_POST['code_postal']) and isset($_POST['ville']) and isset($_POST['adresse']) and isset($_POST['maPhrase'])) {
                 $donnees = [
                     'username' => htmlspecialchars($req->get('username')),
@@ -62,6 +64,7 @@ class playerController implements ControllerProviderInterface{
                 if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['adresse']))) $erreurs['adresse']="L'adresse doit être composé de 2 lettres minimum";
                 if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['ville']))) $erreurs['ville']='La ville doit être composé de 2 lettres minimum';
                 if(! is_numeric($donnees['code_postal']))$erreurs['code_postal']='Saisir une valeur numérique';
+                var_dump($_SESSION);
                 if($donnees['maPhrase'] != $_SESSION['phrase']) $erreurs['phrase']='Le captcha est incorrect';
 
                 if(! empty($erreurs))
@@ -70,10 +73,10 @@ class playerController implements ControllerProviderInterface{
                     $builder->build();
                     $_SESSION['phrase'] = $builder -> getPhrase();
                     $phrase = $_SESSION['phrase'];
-                    if($app['session']->get('roles') == 'ROLE_ADMIN') {
-                        return $app["twig"]->render('backOff/client/creerClient.html.twig', ['donnees' => $donnees, 'erreurs' => $erreurs, 'image' => $builder->inline(), 'phrase' => $phrase]);
+                    if($app['session']->get('roles') == 'ADMIN') {
+                        return $app["twig"]->render('admin_views/creerClient.html.twig', ['donnees' => $donnees, 'erreurs' => $erreurs, 'image' => $builder->inline(), 'phrase' => $phrase]);
                     }else{
-                        return $app["twig"]->render('creerClientNonInscrit.html.twig', ['donnees' => $donnees, 'erreurs' => $erreurs, 'image' => $builder->inline(), 'phrase' => $phrase]);
+                        return $app["twig"]->render('addPlayer.html.twig', ['donnees' => $donnees, 'erreurs' => $erreurs, 'image' => $builder->inline(), 'phrase' => $phrase]);
 
                     }
                 }
