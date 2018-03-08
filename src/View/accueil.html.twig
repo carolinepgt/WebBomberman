@@ -2,5 +2,21 @@
 {% block contenu %}
 
     <h1> Accueil Projet Tuteuré : Bomberman </h1>
+    <div class="row">
+
+        <canvas id="canvas" width="630" height="630">Votre navigateur ne supporte pas HTML5, veuillez le mettre à jour pour jouer.</canvas>
+    </div>
+
+    <script src="{{ asset('../src/javascript/View.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Elem.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Bombe.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Controller.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Model.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Plateau.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Personnage.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Effet.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Mur.js') }}"></script>
+    <script src="{{ asset('../src/javascript/SpikeBombe.js') }}"></script>
+    <script src="{{ asset('../src/javascript/Bomberman.js') }}"></script>
 
 {% endblock %}
