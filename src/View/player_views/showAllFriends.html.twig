@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <div class="row">
+        <table align="center">
+        {% if donnees is defined and donnees is not empty %}
+            <caption>Ma liste d'amis</caption>
+            <thead>
+            <tr>
+                <th>ID de votre ami</th><th>Login de votre ami</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ami in donnees if donnees is not empty %}
+                <tr>
+                    <td>{{ami.idUSerAjoute}}</td><td>{{ami.loginPlayerAjoute}}</td>
+                    <td><a href="{{ path('friends.delete',{id: ami.idUSerAjoute}) }}">Supprimer cet ami</a></td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        {% else %}
+            <h1 align="center" style="color: red">Vous n'avez aucuns amis dans votre liste</h1>
+        {% endif %}
+    </div>
+{% endblock %}

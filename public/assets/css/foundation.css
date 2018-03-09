@@ -5363,7 +5363,7 @@ table {
   table tr td {
     display: table-cell;
     line-height: 1.125rem;
-      color: white;
+      color: black;
       background : transparent;}
 
 .range-slider {

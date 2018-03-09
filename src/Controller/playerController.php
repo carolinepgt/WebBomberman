@@ -96,6 +96,57 @@ class playerController implements ControllerProviderInterface{
             else
                 return $app->abort(404, 'error Pb data form Add');
         }
+
+    public function editPlayer(Application $app,$id, Request $request){
+        $user = $app['session']->get('user_id');
+        if (!($app['session']->get('roles') == 'PLAYER' && $id == (int)$user)){
+            return $app->redirect($app["url_generator"]->generate("index.erreurDroit"));
+        }
+
+        $this->playerModel = new playerModel($app);
+        $donnees = $this->playerModel->getCoordonneesClientById($id);
+        return $app["twig"]->render('player_views/editCoordonnees.html.twig',['donnees'=>$donnees]);
+    }
+
+    public function validFormEditPlayer(Application $app, Request $req){
+        if (isset($_POST['nom']) && isset($_POST['username']) and isset($_POST['code_postal']) and isset($_POST['adresse']) and isset($_POST['id']) and isset($_POST['ville'])) {
+            $donnees = [
+                'nom' => htmlspecialchars($_POST['nom']),                    // echapper les entrées
+                'username' => htmlspecialchars($req->get('username')),  //$app['request']-> ne focntionne plus
+                'code_postal' => htmlspecialchars($req->get('code_postal')),
+                'ville' => htmlspecialchars($req->get('ville')),  //$req->query->get('photo')-> ne focntionne plus
+                'adresse' => htmlspecialchars($req->get('adresse')),  //$req->query->get('photo')-> ne focntionne plus
+                'id' => $app->escape($req->get('id'))//$req->query->get('photo')
+            ];
+
+            if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['nom']))) $erreurs['nom']='Le nom doit être composé de 2 lettres minimum';
+            if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['username']))) $erreurs['username']='Le pseudo doit être composé de 2 lettres minimum';
+            if ((! preg_match("/^[0-9]{5}/",$donnees['code_postal']))) $erreurs['code_postal']='Le code postal doit être composé de 5 chiffres';
+            if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['adresse']))) $erreurs['adresse']="L'adresse doit être composé de 2 lettres minimum";
+            if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['ville']))) $erreurs['ville']='La ville doit être composé de 2 lettres minimum';
+            if(! is_numeric($donnees['code_postal']))$erreurs['code_postal']='Saisir une valeur numérique';
+
+            if (!empty($erreurs)) {
+                $this->playerModel = new playerModel($app);
+                $typeProduits = $this->playerModel->getCoordonneesClientById($donnees['id']);
+                return $app["twig"]->render('player_views/editCoordonnees.html.twig',['donnees'=>$donnees,'erreurs'=>$erreurs]);
+            }
+            else
+            {
+                $this->playerModel = new playerModel($app);
+                //var_dump($donnees);
+                $this->playerModel->editClient($donnees);
+                if ($app['session']->get('roles') == 'ADMIN'){
+                    return $app->redirect($app["url_generator"]->generate("player.showAll"));
+                }else{
+                    return $app->redirect($app["url_generator"]->generate("player.index"));
+                }
+            }
+        }
+        else
+            return $app->abort(404, 'error Pb id form edit');
+    }
+
     /**
      * Returns routes to connect to the given application.
      *
@@ -108,10 +159,16 @@ class playerController implements ControllerProviderInterface{
         // TODO: Implement connect() method.
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\playerController::showCoordonnesPlayer')->bind('player.index');
+
         $index->get("/addPlayer", 'App\Controller\playerController::addPlayer')->bind('player.addClient');
         $index->get("/addPlayerNonInscrit", 'App\Controller\playerController::addPlayerWithNoAccount')->bind('player.addPlayerWithNoAccount');
+
         $index->post("/addPlayer", 'App\Controller\playerController::valideFormAddPlayer')->bind('player.validFormAddPlayer');
         $index->post("/addPlayerNonInscrit", 'App\Controller\playerController::validFormAddPlayerWithNoAccount')->bind('player.validFormAddPlayerNonInscrit');
+
+        $index->get("/editPlayer/{id}", 'App\Controller\playerController::editPlayer')->bind('player.editClient');
+        $index->put("/editPlayer", 'App\Controller\playerController::validFormEditPlayer')->bind('player.valideFormEditClient');
+
         return $index;
     }
 }

@@ -17,14 +17,15 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS friends (
-  id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  login VARCHAR(100) NOT NULL,
+  idAjout INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  loginPlayerAjoute VARCHAR(100) NOT NULL,
+  idUserAjoutant int(11) NOT NULL,
+  idUSerAjoute int(11) NOT NULL,
 
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_login` (`login`)
+  PRIMARY KEY (`idAjout`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO users (id,username,password,motdepasse,roles) VALUES
   (1, 'admin', 'd05cc09587a5589671f59966bea4fb12', 'admin', 'ADMIN'),
-  (2, 'player', '2f9dab7127378d55a4121d855266074c', 'client','PLAYER'),
-  (3, 'player2', '2b49abae6e13396373d67063c6473efb','client2','PLAYER');
+  (2, 'player', '6dfaed59e0e74691a7d6103ba21353f9', 'player','PLAYER'),
+  (3, 'player2', 'c0a6de5a2609c11cc36f86d602d1a2e7','player2','PLAYER');

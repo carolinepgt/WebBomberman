@@ -26,6 +26,14 @@ class IndexController implements ControllerProviderInterface{
         return $app["twig"]->render("player_views\accueilPlayer.html.twig");
     }
 
+    public function erreurDroit(Application $app){
+        return $app["twig"]->render("erreurDroit.html.twig");
+    }
+
+    public function erreurCrsf(Application $app){
+        return $app["twig"]->render("error_csrf.html.twig");
+    }
+
     /**
      * Returns routes to connect to the given application.
      *
@@ -39,6 +47,8 @@ class IndexController implements ControllerProviderInterface{
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\IndexController::index')->bind('accueil');
         $index->match("/index", 'App\Controller\IndexController::index')->bind("index.index");
+        $index->match("/pageError", 'App\Controller\IndexController::erreurDroit')->bind("index.erreurDroit");
+        $index->match("/pageErrorToken", 'App\Controller\IndexController::erreurCrsf')->bind("index.errorCsrf");
         $index->match("/pageAdmin", 'App\Controller\IndexController::showPageAdmin')->bind("index.pageAdmin");
         $index->match("/pageplayer", 'App\Controller\IndexController::showPagePlayer')->bind("index.pagePlayer");
 

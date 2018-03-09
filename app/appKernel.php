@@ -50,11 +50,39 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
     ),
 ));
 
+
+//Permet d'utiliser les tokens
+use Silex\Provider\CsrfServiceProvider;
+$app->register(new CsrfServiceProvider());
+use Silex\Provider\FormServiceProvider;
+$app->register(new FormServiceProvider());
+
 use Symfony\Component\HttpFoundation\Request;
 Request::enableHttpMethodParameterOverride();
 
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 
 include('routing.php');
+
+//MiddleWares TOKEN
+use Symfony\Component\Security\Csrf\CsrfToken;
+$app->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($app) {
+
+    $nomRoute=$request->get('_route');
+    $routeToken = array("'player.validFormAddPlayer","player.validFormAddPlayerNonInscrit","player.valideFormEditClient",
+        "user.validFormlogin","friends.validFormDelete");
+
+    if (in_array($nomRoute,$routeToken)){
+        if (isset($_POST['_csrf_token'])) {
+            $token = $_POST['_csrf_token'];
+            $csrf_token = new CsrfToken('token', $token);
+            $csrf_token_ok = $app['csrf.token_manager']->isTokenValid($csrf_token);
+            if(!$csrf_token_ok)
+            {
+                return $app ->redirect($app["url_generator"]->generate("index.errorCsrf"));
+            }
+        }
+    }
+});
 
 $app->run();

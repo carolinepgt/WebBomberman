@@ -4,8 +4,9 @@
     <form method="post" action="{{ path('player.validFormAddPlayerNonInscrit') }}" >
         <div class="row">
             <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
                 <legend>S'inscrire</legend>
-                <label>Username/Login :
+                <label>Username/Login du joueur :
                     <input name="username"  type="text"  size="18" value="{{donnees.username|default('')}}" />
                     {% if erreurs.username is defined %}
                         <small class="error">{{erreurs.username}}</small>
@@ -17,25 +18,25 @@
                         <small class="error">{{erreurs.motdepasse}}</small>
                     {% endif %}
                 </label>
-                <label>Nom du client :
+                <label>Nom du joueur :
                     <input name="nom"  type="text"  size="18" value="{{donnees.nom|default('')}}"/>
                     {% if erreurs.nom is defined %}
                         <small class="error">{{erreurs.nom}}</small>
                     {% endif %}
                 </label>
-                <label>Code postal de la ville du client :
+                <label>Code postal de la ville du joueur :
                     <input name="code_postal"  type="text"  size="18" value="{{donnees.code_postal|default('')}}"/>
                     {% if erreurs.code_postal is defined %}
                         <small class="error">{{erreurs.code_postal}}</small>
                     {% endif %}
                 </label>
-                <label>Ville du client :
+                <label>Ville du joueur :
                     <input name="ville"  type="text"  size="18" value="{{donnees.ville|default('')}}"/>
                     {% if erreurs.ville is defined %}
                         <small class="error">{{erreurs.ville}}</small>
                     {% endif %}
                 </label>
-                <label>Adresse du client :
+                <label>Adresse du joueur :
                     <input name="adresse"  type="text"  size="18" value="{{donnees.adresse|default('')}}"/>
                     {% if erreurs.adresse is defined %}
                         <small class="error">{{erreurs.adresse}}</small>

@@ -13,19 +13,21 @@
                 <ul class="dropdown">
                     <li><a href="{{ path('game.soloPlayer') }}"> Jouer en solo </a></li>
                     <li><a href="{{ path('game.duoPlayer') }}"> Jouer en duo </a></li>
+                    <li><a href="{{ path('game.bomberPac') }}"> Jouer au bomber-Pac </a></li>
+                    <li><a href="{{ path('game.multiplayer') }}"> Jouer en multijoueur </a></li>
                 </ul>
             </li>
             <li class="has-dropdown"><a href="#"> Gestion des coordonnées </a>
                 <ul class="dropdown">
                     <li>
-                        <a href=""> Afficher/Modifier ses coordonnées </a>
+                        <a href="{{ path('player.index') }}"> Afficher/Modifier ses coordonnées </a>
                     </li>
                 </ul>
             </li>
             <li class="has-dropdown"><a href="#"> Gestion de ses amis </a>
                 <ul class="dropdown">
                     <li>
-                        <a href=""> Afficher/Supprimer ses amis </a>
+                        <a href="{{ path('friends.index') }}"> Afficher/Supprimer des amis </a>
                     </li>
                     <li>
                         <a href=""> Ajouter un ami </a>
