@@ -41,4 +41,44 @@ class FriendsModel{
             ->where('idUserAjoutant='.$id2." and idUSerAjoute=".$id);
         return $queryBuilder->execute();
     }
+
+    public function getAllPlayers()
+    {
+        $queryBuilder = new QueryBuilder($this->db);
+        $queryBuilder
+            ->select ('*')
+            ->from('users')
+            -> where("roles = 'PLAYER'");
+
+        return $queryBuilder->execute()->fetchAll();
+    }
+
+    public function addFriends($donnees, $user)
+    {
+        $queryBuilder = new QueryBuilder($this->db);
+        $queryBuilder
+            ->insert('friends')
+            ->values([
+                'loginPlayerAjoute'=> '?',
+                'idUserAjoutant'=>'?',
+                'idUSerAjoute'=>'?'
+            ])
+
+            ->where('id= ?')
+            ->setParameter(0, $donnees['username'])
+            ->setParameter(1, $user)
+            ->setParameter(2, $donnees['id']);
+        return $queryBuilder->execute();
+    }
+
+    public function getAPlayers($id)
+    {
+        $queryBuilder = new QueryBuilder($this->db);
+        $queryBuilder
+            ->select ('*')
+            ->from('users')
+            -> where("id = ".$id);
+
+        return $queryBuilder->execute()->fetch();
+    }
 }

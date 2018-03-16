@@ -39,6 +39,30 @@ class FriendsController implements ControllerProviderInterface{
         return $app->redirect($app["url_generator"]->generate("friends.index"));
     }
 
+    public function afficherTousLesJoueurs(Application $app){
+        $this->friendsModel = new FriendsModel($app);
+        $clientModel = $this->friendsModel->getAllPlayers();
+
+        return $app["twig"]->render('player_views/showAllPlayers.html.twig',['donnees'=>$clientModel]);
+    }
+
+    public function addFriends(Application $app,$id){
+        $this->friendsModel= new FriendsModel($app);
+        $donnees = $this->friendsModel->getAPlayers($id);
+        return $app['twig']->render('player_views/ajouterAmi.html.twig',['donnees'=>$donnees]);
+    }
+
+    public function validFormAdd(Application $app,Request $req){
+        $donnees=[
+            'id' => $req->get('id'),
+            'username' => $req->get('username')
+        ];
+        $user = $app['session']->get('user_id');
+        $this->friendsModel = new FriendsModel($app);
+        $this->friendsModel->addFriends($donnees,$user);
+        return $app->redirect($app["url_generator"]->generate("friends.index"));
+    }
+
     /**
      * Returns routes to connect to the given application.
      *
@@ -51,6 +75,11 @@ class FriendsController implements ControllerProviderInterface{
         // TODO: Implement connect() method.
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\FriendsController::showFriendsPlayer')->bind('friends.index');
+
+        $index->match("/showPlayers", 'App\Controller\FriendsController::afficherTousLesJoueurs')->bind('friends.showPlayers');
+
+        $index->get("/add/{id}", 'App\Controller\FriendsController::addFriends')->bind('friends.add');
+        $index->post("/add", 'App\Controller\FriendsController::validFormAdd')->bind('friends.validFormAdd');
 
         $index->get("/delete/{id}", 'App\Controller\FriendsController::deleteAFriend')->bind('friends.delete');
         $index->delete("/delete", 'App\Controller\FriendsController::validFormDeleteFriend')->bind('friends.validFormDelete');

@@ -1,0 +1,17 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <form method="post" action="{{ path('friends.validFormAdd') }}">
+        <div class="row">
+            <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
+                <legend>Confirmer l'ajout du joueur dans la liste d'ami : </legend>
+                <input name="id"  type="hidden" value="{{donnees.id}}" />
+                <input name="username"  type="hidden" value="{{donnees.username}}" />
+                <label>ID : <h5>{{donnees.id}}</h5> </label>
+                <label>Login : <h5>{{donnees.username}}</h5> </label>
+
+                <input type="submit" name="ajouterAmi" value="Ajouter un ami" />
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

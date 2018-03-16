@@ -70,7 +70,7 @@ $app->before(function (\Symfony\Component\HttpFoundation\Request $request) use (
 
     $nomRoute=$request->get('_route');
     $routeToken = array("'player.validFormAddPlayer","player.validFormAddPlayerNonInscrit","player.valideFormEditClient",
-        "user.validFormlogin","friends.validFormDelete");
+        "user.validFormlogin","friends.validFormDelete","friends.validFormAdd");
 
     if (in_array($nomRoute,$routeToken)){
         if (isset($_POST['_csrf_token'])) {

@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <div class="row">
+        <table align="center">
+            {% if donnees is defined and donnees is not empty %}
+            <caption>Ajouter un ami</caption>
+            <thead>
+            <tr>
+                <th>ID des joueurs</th><th>Login des joueurs</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in donnees if donnees is not empty %}
+                <tr>
+                    <td>{{player.id}}</td><td>{{player.username}}</td>
+                    <td><a href="{{ path('friends.add',{id: player.id}) }}">Ajouter cet ami</a></td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        {% else %}
+            <h1 align="center" style="color: red">Pas de joueurs dans la database</h1>
+        {% endif %}
+    </div>
+{% endblock %}
