@@ -1,0 +1,29 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <form method="post" action="{{ path('statistiques.validFormEditStat') }}">
+        <div class="row">
+            <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
+                <legend>Modifier ses statistiques</legend>
+                <input name="idUsers"  type="hidden" value="{{donnees.idUsers}}" />
+
+                <label>Nombre de kill :
+                    <input name="nbKill"  type="text"  size="18" value="{{donnees.nbKill}}" />
+                    {% if erreurs.nbKill is defined %}
+                        <small class="error">{{erreurs.nbKill}}</small>
+                    {% endif %}
+                </label>
+                <label>Nombre de mort :
+                    <input name="nbMort"  type="text"  size="18" value="{{donnees.nbMort}}" />
+                    {% if erreurs.nbMort is defined %}
+                        <small class="error">{{erreurs.nbMort}}</small>
+                    {% endif %}
+                </label>
+
+                <input type="hidden" id="_method" name="_method" value="put" />
+
+                <input type="submit" name="editStats" value="Modifier ses statistiques" />
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

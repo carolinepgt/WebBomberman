@@ -1,0 +1,46 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <form method="post" action="{{ path('player.valideFormEditClient') }}">
+        <div class="row">
+            <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
+                <legend>Modifier vos coordonnées personnelles</legend>
+                <input name="id"  type="hidden" value="{{donnees.id}}" />
+                <label>Username/Login du joueur :
+                    <input name="username"  type="text"  size="18" value="{{donnees.username}}" />
+                    {% if erreurs.username is defined %}
+                        <small class="error">{{erreurs.username}}</small>
+                    {% endif %}
+                </label>
+                <label>Nom du joueur :
+                    <input name="nom"  type="text"  size="18" value="{{donnees.nom}}" />
+                    {% if erreurs.nom is defined %}
+                        <small class="error">{{erreurs.nom}}</small>
+                    {% endif %}
+                </label>
+                <label>Code postal du joueur :
+                    <input name="code_postal"  type="text"  size="18" 	value="{{donnees.code_postal}}"/>
+                    {% if erreurs.code_postal is defined %}
+                        <small class="error">{{erreurs.code_postal}}</small>
+                    {% endif %}
+                </label>
+                <label>Ville du joueur :
+                    <input name="ville"  type="text"  size="18" value="{{donnees.ville}}"/>
+                    {% if erreurs.adresse is defined %}
+                        <small class="error">{{erreurs.ville}}</small>
+                    {% endif %}
+                </label>
+                <label>Adresse du joueur :
+                    <input name="adresse"  type="text"  size="18" value="{{donnees.adresse}}"/>
+                    {% if erreurs.adresse is defined %}
+                        <small class="error">{{erreurs.adresse}}</small>
+                    {% endif %}
+                </label>
+
+                <input type="hidden" id="_method" name="_method" value="put" />
+
+                <input type="submit" name="modifierPlayer" value="Modifier ses coordonnees" />
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

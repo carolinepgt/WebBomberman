@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS localParty, users, friends, statictics, networkParty, score;
+DROP TABLE IF EXISTS localParty, statictics, users, friends, networkParty, score;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -16,6 +16,15 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE KEY `unique_login` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table if not exists statictics(
+  id int(11) not null AUTO_INCREMENT,
+  idUsers int(11) not null,
+  nbKill INT(11),
+  nbMort int(11),
+  PRIMARY KEY (id),
+  CONSTRAINT fk_statistics_users FOREIGN KEY (idUsers) REFERENCES users (id)
+) DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS friends (
   idAjout INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   loginPlayerAjoute VARCHAR(100) NOT NULL,
@@ -29,3 +38,8 @@ INSERT INTO users (id,username,password,motdepasse,roles) VALUES
   (1, 'admin', 'd05cc09587a5589671f59966bea4fb12', 'admin', 'ADMIN'),
   (2, 'player', '6dfaed59e0e74691a7d6103ba21353f9', 'player','PLAYER'),
   (3, 'player2', 'c0a6de5a2609c11cc36f86d602d1a2e7','player2','PLAYER');
+
+INSERT INTO statictics (id,idUsers,nbKill,nbMort) VALUES
+  (1,1,0,0),
+  (2,2,0,0),
+  (3,3,0,0);

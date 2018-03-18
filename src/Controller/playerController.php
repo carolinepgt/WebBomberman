@@ -26,7 +26,24 @@ class playerController implements ControllerProviderInterface{
         return $app["twig"]->render('player_views/showCoordonnees.html.twig',['donnees'=>$clientModel]);
     }
 
+    public function showAllPlayers(Application $app){
+        $this->playerModel = new playerModel($app);
+        $clientModel = $this->playerModel->getAllClient();
+
+        return $app["twig"]->render('admin_views/showAllPlayer.html.twig',['donnees'=>$clientModel]);
+    }
+
     public function addPlayerWithNoAccount(Application $app){
+        $builder = new CaptchaBuilder();
+        $builder->build();
+        $_SESSION['phrase'] = $builder -> getPhrase();
+        $phrase = $_SESSION['phrase'];
+        $app['session']->set('phrase',$phrase);
+
+        return $app["twig"]->render('addPlayer.html.twig', ['phrase' => $phrase, 'image' => $builder -> inline()]);
+    }
+
+    public function addPlayerAdmin(Application $app){
         $builder = new CaptchaBuilder();
         $builder->build();
         $_SESSION['phrase'] = $builder -> getPhrase();
@@ -97,15 +114,36 @@ class playerController implements ControllerProviderInterface{
                 return $app->abort(404, 'error Pb data form Add');
         }
 
-    public function editPlayer(Application $app,$id, Request $request){
+    public function editPlayer(Application $app,$id, Request $request)
+    {
         $user = $app['session']->get('user_id');
-        if (!($app['session']->get('roles') == 'PLAYER' && $id == (int)$user)){
+        if (!($app['session']->get('roles') == 'PLAYER' && $id == (int)$user)) {
             return $app->redirect($app["url_generator"]->generate("index.erreurDroit"));
         }
 
         $this->playerModel = new playerModel($app);
         $donnees = $this->playerModel->getCoordonneesClientById($id);
-        return $app["twig"]->render('player_views/editCoordonnees.html.twig',['donnees'=>$donnees]);
+        return $app["twig"]->render('player_views/editCoordonnees.html.twig', ['donnees' => $donnees]);
+    }
+
+    public function editPlayerAdmin(Application $app,$id){
+        $this->playerModel = new playerModel($app);
+        $donnees = $this->playerModel->getCoordonneesClientById($id);
+        return $app["twig"]->render('admin_views/editCoordonnees.html.twig', ['donnees' => $donnees]);
+    }
+
+    public function deletePlayer(Application $app,$id){
+        $this->playerModel = new playerModel($app);
+        $donnees = $this->playerModel->getCoordonneesClientById($id);
+        return $app["twig"]->render('admin_views/deletePlayer.html.twig', ['donnees' => $donnees]);
+    }
+    public function validFormDeletePlayer(Application $app,Request $req){
+        $donnees=[
+            'id' => $req->get('id'),
+        ];
+        $this->playerModel = new playerModel($app);
+        $this->playerModel->deletePlayer($donnees['id']);
+        return $app->redirect($app["url_generator"]->generate("player.showAll"));
     }
 
     public function validFormEditPlayer(Application $app, Request $req){
@@ -159,15 +197,21 @@ class playerController implements ControllerProviderInterface{
         // TODO: Implement connect() method.
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\playerController::showCoordonnesPlayer')->bind('player.index');
+        $index->match("/showAllPlayers", 'App\Controller\playerController::showAllPlayers')->bind('player.showAll');
 
         $index->get("/addPlayer", 'App\Controller\playerController::addPlayer')->bind('player.addClient');
+        $index->get("/addPlayerAdmin", 'App\Controller\playerController::addPlayerAdmin')->bind('player.addClientAdmin');
         $index->get("/addPlayerNonInscrit", 'App\Controller\playerController::addPlayerWithNoAccount')->bind('player.addPlayerWithNoAccount');
 
         $index->post("/addPlayer", 'App\Controller\playerController::valideFormAddPlayer')->bind('player.validFormAddPlayer');
         $index->post("/addPlayerNonInscrit", 'App\Controller\playerController::validFormAddPlayerWithNoAccount')->bind('player.validFormAddPlayerNonInscrit');
 
         $index->get("/editPlayer/{id}", 'App\Controller\playerController::editPlayer')->bind('player.editClient');
+        $index->get("/editPlayerAdmin/{id}", 'App\Controller\playerController::editPlayerAdmin')->bind('player.editPlayerAdmin');
         $index->put("/editPlayer", 'App\Controller\playerController::validFormEditPlayer')->bind('player.valideFormEditClient');
+
+        $index->get("/deletePlayer/{id}", 'App\Controller\playerController::deletePlayer')->bind('player.deletePlayer');
+        $index->delete("/deletePlayer", 'App\Controller\playerController::validFormDeletePlayer')->bind('player.validFormDeletePlayer');
 
         return $index;
     }

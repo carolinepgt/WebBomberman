@@ -1,0 +1,27 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <div class="row">
+        <table align="center">
+            {% if donnees is defined and donnees is not empty %}
+            <caption>Tous les joueurs</caption>
+            <thead>
+            <tr>
+                <th>ID player</th><th>Username</th><th>Nom</th><th>Code postal</th><th>Ville</th><th>Adresse</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in donnees if donnees is not empty %}
+                <tr>
+                    <td>{{player.id}}</td><td>{{player.username}}</td><td>{{player.nom}}</td>
+                    <td>{{player.code_postal}}</td><td>{{player.ville}}</td><td>{{player.adresse}}</td>
+                    <td><a href="{{ path('player.editPlayerAdmin',{id: player.id}) }}">Modifier le joueur</a></td>
+                    <td><a href="{{ path('player.deletePlayer',{id: player.id}) }}">Supprimer le joueur</a></td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        {% else %}
+            <h1 align="center" style="color: red">Aucunes statistiques dans la base de données</h1>
+        {% endif %}
+    </div>
+{% endblock %}

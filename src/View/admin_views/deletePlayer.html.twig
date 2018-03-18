@@ -1,0 +1,17 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <form method="post" action="{{ path('player.validFormDeletePlayer') }}">
+        <div class="row">
+            <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
+                <legend>Confirmer la suppression du joueur : </legend>
+                <input name="id"  type="hidden" value="{{donnees.id}}" />
+
+                <label>Nom : <h5>{{donnees.username}}</h5> </label>
+                <input type="hidden" id="_method" name="_method" value="delete" />
+
+                <input type="submit" name="supprimerPlayer" value="Supprimer un joueur" />
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

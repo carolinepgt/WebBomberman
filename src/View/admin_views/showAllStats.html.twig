@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <div class="row">
+        <table align="center">
+            {% if donnees is defined and donnees is not empty %}
+            <caption>Toutes les statistiques</caption>
+            <thead>
+            <tr>
+                <th>ID player</th><th>Nombre de kill</th><th>Nombre de mort</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in donnees if donnees is not empty %}
+                <tr>
+                    <td>{{player.idUsers}}</td><td>{{player.nbKill}}</td><td>{{player.nbMort}}</td>
+                    <td><a href="{{ path('statistiques.editStat',{id: player.idUsers}) }}">Modifier les statistiques</a></td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        {% else %}
+            <h1 align="center" style="color: red">Aucunes statistiques dans la base de données</h1>
+        {% endif %}
+    </div>
+{% endblock %}

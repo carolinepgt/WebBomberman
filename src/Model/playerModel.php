@@ -75,4 +75,13 @@ class playerModel{
             ->setParameter(5, $donnees['id']);
         return $queryBuilder->execute();
     }
+
+    public function deletePlayer($id)
+    {
+        $queryBuilder = new QueryBuilder($this->db);
+        $queryBuilder
+            ->delete('users')
+            ->where('id='.$id);
+        return $queryBuilder->execute();
+    }
 }

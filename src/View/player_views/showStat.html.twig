@@ -1,0 +1,18 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+    <div class="row">
+        <table align="center">
+            <caption>Détails de vos statistiques en jeu</caption>
+            <thead>
+            <tr>
+                <th>ID player</th><th>Nombre de kill</th><th>Nombre de mort</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{donnees.idUsers}}</td><td>{{donnees.nbKill}}</td><td>{{donnees.nbMort}}</td>
+            </tr>
+            <tbody>
+        </table>
+    </div>
+{% endblock %}
