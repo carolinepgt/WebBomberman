@@ -1,0 +1,32 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+
+    <div class="row">
+        <table align="center">
+            {% if donnees is defined and donnees is not empty %}
+            <caption>Toutes les parties</caption>
+            <thead>
+            <tr>
+                <th>ID de la partie</th><th>Nom de la partie</th><th>Etat de la partie</th><th>Nombre de joueurs attendus dans la partie</th><th>Nombre de joueurs dans la partie</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for parties in donnees if donnees is not empty %}
+                <tr>
+                    <td>{{parties.idPartie}}</td><td>{{parties.nomPartie}}</td><td>{{parties.etat}}</td>
+                    <td>{{parties.nbJoueursAttendus}}</td><td>{{parties.nbJoueursDansPartie}}</td>
+                    {% if parties.nbJoueursAttendus == parties.nbJoueursDansPartie %}
+                        <td style="color: red">Partie complète</td>
+                    {% else %}
+                        <td><a href="{{ path('game.goInPartie',{idPartie: parties.idPartie}) }}">Rejoindre la partie</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        {% else %}
+            <h1 align="center" style="color: red">Aucunes parties dans la base de données</h1>
+        {% endif %}
+    </div>
+
+{% endblock %}

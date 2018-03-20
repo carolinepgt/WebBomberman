@@ -1,0 +1,29 @@
+{% extends "layout.html.twig" %}
+{% block contenu %}
+
+    <form method="post" action="{{ path('game.validFormCreatePartie') }}">
+        <div class="row">
+            <fieldset>
+                <input type="hidden"   name="_csrf_token"   value="{{ csrf_token('token') }}">
+                <legend>Creer une partie : </legend>
+
+                <label> Nom de la partie :
+                    <input name="nomPartie"  type="text"  size="18" value="{{donnees.nomPartie|default('')}}" />
+                    {% if erreurs.nomPartie is defined %}
+                        <small class="error">{{erreurs.nomPartie}}</small>
+                    {% endif %}
+                </label>
+
+                <label> Nombre de joueurs attendus dans la partie :
+                    <input name="nbJoueursAttendus"  type="text"  size="18" value="{{donnees.nbJoueursAttendus|default('')}}" />
+                    {% if erreurs.nbJoueursAttendus is defined %}
+                        <small class="error">{{erreurs.nbJoueursAttendus}}</small>
+                    {% endif %}
+                </label>
+
+                <input type="submit" name="creerPartie" value="Creer une partie" />
+            </fieldset>
+        </div>
+    </form>
+
+{% endblock %}

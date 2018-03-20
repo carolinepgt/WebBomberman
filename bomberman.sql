@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS localParty, statictics, users, friends, networkParty, score;
+DROP TABLE IF EXISTS participe, parties, statictics, users, friends, networkParty, score;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -15,6 +15,23 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_login` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table if not exists parties(
+  idPartie int(11) not null AUTO_INCREMENT,
+  nomPartie varchar(11) not null,
+  etat int(11),
+  nbJoueursAttendus int(11) not null,
+  nbJoueursDansPartie int(11) not null,
+  primary key(idPartie)
+) DEFAULT CHARSET=utf8;
+
+create table if not exists participe(
+  idPartie int(11) not null,
+  idJoueur int(11) not null,
+  primary key(idPartie,idJoueur),
+  CONSTRAINT fk_participe_users FOREIGN KEY (idJoueur) REFERENCES users (id),
+  CONSTRAINT fk_participe_parties FOREIGN KEY (idPartie) REFERENCES parties (idPartie)
+) DEFAULT CHARSET=utf8;
 
 create table if not exists statictics(
   id int(11) not null AUTO_INCREMENT,

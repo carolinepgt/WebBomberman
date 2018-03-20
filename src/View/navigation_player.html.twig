@@ -14,7 +14,12 @@
                     <li><a href="{{ path('game.soloPlayer') }}"> Jouer en solo </a></li>
                     <li><a href="{{ path('game.duoPlayer') }}"> Jouer en duo </a></li>
                     <li><a href="{{ path('game.bomberPac') }}"> Jouer au bomber-Pac </a></li>
-                    <li><a href="{{ path('game.multiplayer') }}"> Jouer en multijoueur </a></li>
+                </ul>
+            </li>
+            <li class="has-dropdown"><a href="#"> Multijoueur </a>
+                <ul class="dropdown">
+                    <li><a href="{{ path('game.createGame') }}"> Créer une partie </a></li>
+                    <li><a href="{{ path('game.showAllParties') }}"> Rejoindre une partie </a></li>
                 </ul>
             </li>
             <li class="has-dropdown"><a href="#"> Gestion des coordonnées </a>
@@ -24,7 +29,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="has-dropdown"><a href="#"> Gestion de ses amis </a>
+            <li class="has-dropdown"><a href="#"> Gestion des amis </a>
                 <ul class="dropdown">
                     <li>
                         <a href="{{ path('friends.index') }}"> Afficher/Supprimer des amis </a>
