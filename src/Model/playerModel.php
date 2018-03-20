@@ -32,7 +32,28 @@ class playerModel{
     }
 
     public function addClient($donnees){
-        $queryBuilder = new QueryBuilder($this->db);
+        try{
+            $this->db->beginTransaction();
+            $this->db->query("INSERT INTO users (nom,username,code_postal,ville,adresse,motdepasse,password) VALUES ('".$donnees['nom']."',
+            '".$donnees['username']."','".$donnees['code_postal']."','".$donnees['ville']."','".$donnees['adresse']."',
+            '".$donnees['motdepasse']."','".$donnees['password']."');");
+
+            $maxID = $this->db->prepare("SELECT max(id) from users");
+            $maxID->execute();
+            $max = $maxID->fetch();
+            var_dump($max);
+
+            $this->db->query("INSERT INTO statictics VALUES('".$max['max(id)']."','".$max['max(id)']."',0,0);");
+            $this->db->commit();
+        }
+        catch (Exception $e){
+            $this->db->rollback();
+            echo 'Tout ne s\'est pas bien passé, voir les erreurs ci-dessous<br />';
+            echo 'Erreur : '.$e->getMessage().'<br />';
+            echo 'N° : '.$e->getCode();
+            exit();
+        }
+         /* $queryBuilder = new QueryBuilder($this->db);
         $queryBuilder
             ->insert('users')
             ->values([
@@ -53,7 +74,7 @@ class playerModel{
             ->setParameter(4, $donnees['adresse'])
             ->setParameter(5, $donnees['motdepasse'])
             ->setParameter(6, $donnees['password']);
-        return $queryBuilder->execute();
+        return $queryBuilder->execute();*/
     }
 
     public function editClient($donnees)

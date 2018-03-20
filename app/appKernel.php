@@ -86,4 +86,34 @@ $app->before(function (\Symfony\Component\HttpFoundation\Request $request) use (
     }
 });
 
+//MiddleWare routes cote PLAYER
+$app->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($app) {
+    $nomRoute = $request->get('_route');
+    $routeClient = array("statistiques.index","game.index","game.bomberPac","game.multiplayer","friends.index","friends.showPlayers",
+        "friends.add","friends.delete","player.index","player.editClient");
+
+    if ($app['session']->get('roles') != 'PLAYER' && in_array($nomRoute,$routeClient)){
+        return $app->redirect($app["url_generator"]->generate('index.erreurDroit'));
+    }
+
+    if (($app['session']->get('logged') != 1 && $nomRoute=='index.pagePlayer')){
+        return $app->redirect($app["url_generator"]->generate('index.erreurDroit'));
+    }
+});
+
+//MiddleWare routes cote ADMIN
+$app->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($app) {
+    $nomRoute = $request->get('_route');
+    $routeClient = array("statistiques.showAll","statistiques.editStat","player.addClientAdmin","player.showAll","player.editPlayerAdmin",
+        "player.deletePlayer");
+
+    if ($app['session']->get('roles') != 'ADMIN' && in_array($nomRoute,$routeClient)){
+        return $app->redirect($app["url_generator"]->generate('index.erreurDroit'));
+    }
+
+    if (($app['session']->get('logged') != 1 && $nomRoute=='index.pageAdmin')){
+        return $app->redirect($app["url_generator"]->generate('index.erreurDroit'));
+    }
+});
+
 $app->run();

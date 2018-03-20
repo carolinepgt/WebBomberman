@@ -50,7 +50,7 @@ class playerController implements ControllerProviderInterface{
         $phrase = $_SESSION['phrase'];
         $app['session']->set('phrase',$phrase);
 
-        return $app["twig"]->render('addPlayer.html.twig', ['phrase' => $phrase, 'image' => $builder -> inline()]);
+        return $app["twig"]->render('admin_views/creerClient.html.twig', ['phrase' => $phrase, 'image' => $builder -> inline()]);
     }
 
     public function validFormAddPlayerWithNoAccount(Application $app,Request $req){
