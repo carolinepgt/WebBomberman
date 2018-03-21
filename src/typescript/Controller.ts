@@ -8,8 +8,17 @@ class Controller {
     private goSouth :boolean[];
     private goWest :boolean[];
 
+    private ligne :boolean;
+    private idPartie :number;
+    private nbJoueur :number;
+    private bombe :boolean[];
+    private messageServeur :string;
+    private nj :number;
+    private changement :number[];
 
-    constructor( model :Model, view :View) {
+
+
+    constructor( model :Model, view :View, reseau :boolean) {
 
         this.model = model;
         this.view=view;
@@ -18,16 +27,41 @@ class Controller {
         this.goEast=[];
         this.goSouth=[];
         this.goWest=[];
+        this.bombe=[];
+        this.changement=[];
+        this.messageServeur="";
+        this.ligne=reseau;
 
         for (let i=0; i<nbJoueur; i++ ){
             this.goNorth[i]=false;
             this.goEast[i]=false;
             this.goSouth[i]=false;
             this.goWest[i]=false;
+            this.bombe[i]=false;
+            this.changement[i]=0;
         }
 
+        if (this.ligne){
+            this.recupereIdPartie();
+            this.recupereEtat();
+        } else this.nj=1;
         this.start();
 
+    }
+
+    private recupereIdPartie(){
+        let xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=()=> {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                let m :string[]=xmlhttp.responseText.split(",");
+                this.idPartie=parseInt(m[0]);
+                this.nbJoueur=parseInt(m[1]);
+                this.nj=parseInt(m[2]);
+            }
+        };
+
+        xmlhttp.open("GET","RecupereId.php",true);
+        xmlhttp.send();
     }
 
     public start()  :void {
@@ -40,12 +74,13 @@ class Controller {
             if (key==113 || key==81) this.goWest[0]=true;
             if (key==32) this.toucheBombe(0,0);
 
-            if (key==38) this.goNorth[1]=true;
-            if (key==39) this.goEast[1]=true;
-            if (key==40) this.goSouth[1]=true;
-            if (key==37) this.goWest[1]=true;
-            if (key==96) this.toucheBombe(1,0);
-
+            if(!this.ligne) {
+                if (key == 38) this.goNorth[1] = true;
+                if (key == 39) this.goEast[1] = true;
+                if (key == 40) this.goSouth[1] = true;
+                if (key == 37) this.goWest[1] = true;
+                if (key == 96) this.toucheBombe(1, 0);
+            }
             return false;
         };
         window.onkeyup = (event) => {
@@ -55,11 +90,12 @@ class Controller {
             if (key==115 || key==83) this.goSouth[0]=false;
             if (key==113 || key==81) this.goWest[0]=false;
 
-            if (key==38) this.goNorth[1]=false;
-            if (key==39) this.goEast[1]=false;
-            if (key==40) this.goSouth[1]=false;
-            if (key==37) this.goWest[1]=false;
-
+            if (!this.ligne) {
+                if (key == 38) this.goNorth[1] = false;
+                if (key == 39) this.goEast[1] = false;
+                if (key == 40) this.goSouth[1] = false;
+                if (key == 37) this.goWest[1] = false;
+            }
             return false;
         }
 
@@ -70,20 +106,33 @@ class Controller {
     Gère les déplacements du personnages en fonction des attributs activé par la pression des touches
      */
     public  actualisePostion() :void {
-        for (let i=0; i< this.model.tabPerso.length; i++){
-            let perso :Personnage= this.model.tabPerso[i];
-            perso.actualisePosition(this.model.plateau,this.goNorth[i], this.goEast[i], this.goSouth[i], this.goWest[i]);
-            this.verifieEffet(perso);
+        if (this.nj==1) {
+            if(this.ligne)this.recupereAction();
+            for (let i=0; i< this.model.tabPerso.length; i++){
+                let perso :Personnage= this.model.tabPerso[i];
+                perso.actualisePosition(this.model.plateau,this.goNorth[i], this.goEast[i], this.goSouth[i], this.goWest[i]);
+                this.verifieEffet(perso);
+            }
+            if (this.ligne)this.actualiseEtat();
+        }
+        else {
+            this.actualiseAction();
+            this.recupereEtat();
         }
         this.view.afficheVue();
 
     }
 
     private toucheBombe (i :number, typeBombe :number):void {
-        let bomb :Bombe = this.model.tabPerso[i].poseBombe(this.model.plateau.tabElement, typeBombe);
-        if (bomb!=null ) {
-            setTimeout(()=>{this.suppressionElement(bomb.posX, bomb.posY)}, 2000);
+        if (this.nj==1) {
+            let bomb: Bombe = this.model.tabPerso[i].poseBombe(this.model.plateau.tabElement, typeBombe);
+            if (bomb != null) {
+                setTimeout(() => {
+                    this.suppressionElement(bomb.posX, bomb.posY)
+                }, 2000);
+            }
         }
+        else this.bombe[this.nj-1]=true;
     }
 
     /*
@@ -166,6 +215,106 @@ class Controller {
                 }
             }
         }
+    }
+
+    public  actualiseEtat() :void {
+        let message :string="";
+        for (let i =0; i<model.plateau.tabElement.length; i++){
+            for (let j=0; j<model.plateau.tabElement.length; j++){
+                let e=model.plateau.tabElement[i][j];
+                if (e==null)message+="N-";
+                else message+=e.toString()+"-";
+            }
+        }
+
+        let xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","ActualiseEtat.php?idPartie="+this.idPartie+"&etat="+message,true);
+        xmlhttp.send();
+
+    }
+
+
+    private static toObject(x :number, y :number, s :string) :void{
+        let tabE :Elem[][]=model.plateau.tabElement;
+        if (s=="N"){
+            tabE[x][y]=null;
+            return;
+        }
+        if (s=="MI"){
+            tabE[x][y]=new Mur( false, x, y);
+            return;
+        }
+        for (let i=0; i<6; i++){
+            if (s=="M"+i){
+                tabE[x][y]=new Mur( true, x, y);
+                (<Mur>tabE[x][y]).ajouteEffet(i);
+                return;
+            }
+        }
+    }
+
+    public  recupereEtat() :void{
+        let xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=()=> {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                let rep=xmlhttp.responseText;
+                let m :string[] =rep.split("-");
+                let taille :number = model.plateau.tabElement.length;
+                for (let i=0; i<taille; i++){
+                    for (let j=0; j<taille; j++){
+                        Controller.toObject(i, j, m[i*taille+j]);
+                    }
+                }
+                view.afficheVue();
+            }
+        };
+
+        xmlhttp.open("GET","RecupereEtat.php?idPartie="+this.idPartie,true);
+        xmlhttp.send();
+
+    }
+
+
+    public recupereAction() :void{
+        let xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=()=> {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                let rep=xmlhttp.responseText.split(",");
+                for (let i=0; i<rep.length; i++){
+                    let m=rep[i];
+                    let n :number=parseInt(""+m[0]);
+                    this.goNorth[n]=m[1]=='1';
+                    this.goEast[n]=m[2]=='1';
+                    this.goSouth[n]=m[3]=='1';
+                    this.goWest[n]=m[4]=='1';
+                    this.bombe[n]=m[5]=='1';
+                }
+            }
+        };
+
+        xmlhttp.open("GET","RecupereAction.php?idPartie="+this.idPartie,true);
+        xmlhttp.send();
+    }
+
+
+
+    public actualiseAction() :void{
+
+        let message :string=""+ this.nj;
+        if(this.goNorth[this.nj])message+=1;
+        else message+=0;
+        if(this.goEast[this.nj])message+=1;
+        else message+=0;
+        if(this.goSouth[this.nj])message+=1;
+        else message+=0;
+        if(this.goWest[this.nj])message+=1;
+        else message+=0;
+        if(this.bombe[this.nj])message+=1;
+        else message+=0;
+
+        let xmlhttp=new XMLHttpRequest();
+        xmlhttp.open("GET","ActualiseAction.php?idPartie="+this.idPartie+"&nj="+this.nj+"&action="+message,true);
+        xmlhttp.send();
     }
 
 }

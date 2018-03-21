@@ -4,9 +4,9 @@ class Mur extends Elem {
     private _effet :Effet;
 
     constructor(destructible :boolean, x :number, y :number) {
-        super("",x,y);
+        super(x,y);
         if (Math.floor(Math.random()*4)==0) {
-            this._effet = new Effet(this.posX, this.posY);
+            this._effet = new Effet(this.typeEffetCreation(),this.posX, this.posY);
         }
         this._destructible=destructible;
     }
@@ -18,6 +18,15 @@ class Mur extends Elem {
         Destructible = destructible;
     }
     */
+
+    public ajouteEffet( effet :number){
+
+        if (effet!=0) this._effet = new Effet(effet, this.posX, this.posY);
+    }
+
+    public typeEffetCreation() :number{
+        return Math.floor(Math.random()*5+1);
+    }
 
     get destructible(): boolean {
         return this._destructible;

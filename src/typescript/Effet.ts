@@ -11,14 +11,12 @@ class Effet extends Elem {
 
      */
 
-    constructor(posX:number, posY:number) {
-        super( "",posX, posY);
-        this.typeEffetCreation();
+    constructor(typeEffet:number,posX:number, posY:number) {
+        super(posX, posY);
+        this._typeEffet=typeEffet;
     }
 
-    public typeEffetCreation() :void{
-        this._typeEffet=Math.floor(Math.random()*5+1);
-    }
+
 
     public appliqueEffet(perso :Personnage) :void {
         switch (this._typeEffet) {

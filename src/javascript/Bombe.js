@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 var Bombe = /** @class */ (function (_super) {
     __extends(Bombe, _super);
     function Bombe(perso, posX, posY) {
-        var _this = _super.call(this, "./images/bomb.png", posX, posY) || this;
+        var _this = _super.call(this, posX, posY) || this;
         _this._personnage = perso;
         _this.portee = perso.portee;
         perso.nbBombeRestantes--;

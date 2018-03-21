@@ -11,22 +11,29 @@ var __extends = (this && this.__extends) || (function () {
 var Mur = /** @class */ (function (_super) {
     __extends(Mur, _super);
     function Mur(destructible, x, y) {
-        var _this = _super.call(this, "", x, y) || this;
+        var _this = _super.call(this, x, y) || this;
         if (Math.floor(Math.random() * 4) == 0) {
-            _this._effet = new Effet(_this.posX, _this.posY);
+            _this._effet = new Effet(_this.typeEffetCreation(), _this.posX, _this.posY);
         }
         _this._destructible = destructible;
         return _this;
     }
+    /*
+    public Mur(boolean destructible, int posX, int posY, int effet) {
+        super(destructible, posX, posY);
+        if (effet!=0) this.effet = new Effet(effet, getPosX(), getPosY());
+
+        Destructible = destructible;
+    }
+    */
+    Mur.prototype.ajouteEffet = function (effet) {
+        if (effet != 0)
+            this._effet = new Effet(effet, this.posX, this.posY);
+    };
+    Mur.prototype.typeEffetCreation = function () {
+        return Math.floor(Math.random() * 5 + 1);
+    };
     Object.defineProperty(Mur.prototype, "destructible", {
-        /*
-        public Mur(boolean destructible, int posX, int posY, int effet) {
-            super(destructible, posX, posY);
-            if (effet!=0) this.effet = new Effet(effet, getPosX(), getPosY());
-    
-            Destructible = destructible;
-        }
-        */
         get: function () {
             return this._destructible;
         },

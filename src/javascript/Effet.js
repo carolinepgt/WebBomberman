@@ -19,14 +19,11 @@ var Effet = /** @class */ (function (_super) {
     5 : Bonus penetrator;
 
      */
-    function Effet(posX, posY) {
-        var _this = _super.call(this, "", posX, posY) || this;
-        _this.typeEffetCreation();
+    function Effet(typeEffet, posX, posY) {
+        var _this = _super.call(this, posX, posY) || this;
+        _this._typeEffet = typeEffet;
         return _this;
     }
-    Effet.prototype.typeEffetCreation = function () {
-        this._typeEffet = Math.floor(Math.random() * 5 + 1);
-    };
     Effet.prototype.appliqueEffet = function (perso) {
         switch (this._typeEffet) {
             case 1:

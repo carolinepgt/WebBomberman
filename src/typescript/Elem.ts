@@ -2,7 +2,7 @@ class Elem {
     private _posX :number;
     private _posY :number;
 
-    constructor(imageURL:string, posX:number, posY:number) {
+    constructor(posX:number, posY:number) {
         this._posX=posX;
         this._posY=posY;
     }

@@ -4,7 +4,7 @@ class Bombe extends Elem {
     protected portee :number;
 
     constructor(perso :Personnage, posX:number, posY:number){
-        super("./images/bomb.png",posX,posY);
+        super(posX,posY);
         this._personnage=perso;
         this.portee=perso.portee;
         perso.nbBombeRestantes--;

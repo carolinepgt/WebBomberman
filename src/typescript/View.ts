@@ -158,4 +158,5 @@ class View{
     set explosionBombe(value: Bombe[]) {
         this._explosionBombe = value;
     }
+
 }

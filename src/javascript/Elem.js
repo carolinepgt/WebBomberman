@@ -1,5 +1,5 @@
 var Elem = /** @class */ (function () {
-    function Elem(imageURL, posX, posY) {
+    function Elem(posX, posY) {
         this._posX = posX;
         this._posY = posY;
     }

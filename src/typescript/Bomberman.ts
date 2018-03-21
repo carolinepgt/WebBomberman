@@ -1,6 +1,6 @@
 let model :Model = new Model(2,17, 35);
 let view :View = new View(model);
-let controller :Controller = new Controller(model, view);
+let controller :Controller = new Controller(model, view,false);
 
 let boucle=setInterval(function() {
     controller.actualisePostion();
