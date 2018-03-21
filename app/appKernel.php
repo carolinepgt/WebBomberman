@@ -90,7 +90,7 @@ $app->before(function (\Symfony\Component\HttpFoundation\Request $request) use (
 $app->before(function (\Symfony\Component\HttpFoundation\Request $request) use ($app) {
     $nomRoute = $request->get('_route');
     $routeClient = array("statistiques.index","game.index","game.bomberPac","game.multiplayer","friends.index","friends.showPlayers",
-        "friends.add","friends.delete","player.index","player.editClient");
+        "friends.add","friends.delete","player.index","player.editClient","game.createGame","game.goInPartie","game.showAllParties");
 
     if ($app['session']->get('roles') != 'PLAYER' && in_array($nomRoute,$routeClient)){
         return $app->redirect($app["url_generator"]->generate('index.erreurDroit'));

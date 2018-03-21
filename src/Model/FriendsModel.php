@@ -53,6 +53,18 @@ class FriendsModel{
         return $queryBuilder->execute()->fetchAll();
     }
 
+    public function getAllPlayersSaufMoi($user)
+    {
+        $queryBuilder = new QueryBuilder($this->db);
+        $queryBuilder
+            ->select ('*')
+            ->from('users')
+            -> where("roles = 'PLAYER' and id!=".$user." and id not in 
+            (select idUSerAjoute from friends where idUserAjoutant =".$user.")");
+
+        return $queryBuilder->execute()->fetchAll();
+    }
+
     public function addFriends($donnees, $user)
     {
         $queryBuilder = new QueryBuilder($this->db);

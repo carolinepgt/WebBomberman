@@ -22,7 +22,7 @@ class GameModel{
             $maxID->execute();
             $max = $maxID->fetch();
 
-            $this->db->query("INSERT INTO participe VALUES('".$max['max(idPartie)']."','".$user."');");
+            $this->db->query("INSERT INTO participe VALUES('".$max['max(idPartie)']."','".$user."','".$user."00000',1);");
             $this->db->commit();
             return $max['max(idPartie)'];
         }
@@ -47,16 +47,41 @@ class GameModel{
 
     public function rejoindrePartie($idPartie, $user)
     {
-        $queryBuilder = new QueryBuilder($this->db);
+        try{
+            $this->db->beginTransaction();
+
+            $maxID = $this->db->prepare("SELECT max(nbJoueur) from participe where idPartie=".$idPartie);
+            $maxID->execute();
+            $max = $maxID->fetch();
+
+            $maxJoueur = $max['max(nbJoueur)']+1;
+
+            $this->db->query("INSERT INTO participe VALUES('".$idPartie."','".$user."','".$user."00000','".$maxJoueur."');");
+            $this->db->commit();
+        }
+        catch (Exception $e){
+            $this->db->rollback();
+            echo 'Tout ne s\'est pas bien passé, voir les erreurs ci-dessous<br />';
+            echo 'Erreur : '.$e->getMessage().'<br />';
+            echo 'N° : '.$e->getCode();
+            exit();
+        }
+
+
+        /*$queryBuilder = new QueryBuilder($this->db);
         $queryBuilder
             ->insert('participe')
             ->values([
                 'idPartie'=> '?',
-                'idJoueur'=> '?'
+                'idJoueur'=> '?',
+                'actionPartie'=> '?',
+                'nbJoueur'=> '?'
             ])
             ->setParameter(0, $idPartie)
-            ->setParameter(1, $user);
-        return $queryBuilder->execute();
+            ->setParameter(1, $user)
+            ->setParameter(2, $user."00000")
+            ->setParameter(3, $user."00000");
+        return $queryBuilder->execute();*/
     }
 
     public function getJoueursDansPartie($idPartie)

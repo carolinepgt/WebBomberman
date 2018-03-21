@@ -40,8 +40,9 @@ class FriendsController implements ControllerProviderInterface{
     }
 
     public function afficherTousLesJoueurs(Application $app){
+        $user = $app['session']->get('user_id');
         $this->friendsModel = new FriendsModel($app);
-        $clientModel = $this->friendsModel->getAllPlayers();
+        $clientModel = $this->friendsModel->getAllPlayersSaufMoi($user);
 
         return $app["twig"]->render('player_views/showAllPlayers.html.twig',['donnees'=>$clientModel]);
     }

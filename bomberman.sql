@@ -28,6 +28,8 @@ create table if not exists parties(
 create table if not exists participe(
   idPartie int(11) not null,
   idJoueur int(11) not null,
+  actionPartie VARCHAR(25) not null, /*mettre le numero de joueur + 5 zeros a la creation d'un champ*/
+  nbJoueur int(11) not null, /*a incrementer lors de la creation d'un champ dans la table*/
   primary key(idPartie,idJoueur),
   CONSTRAINT fk_participe_users FOREIGN KEY (idJoueur) REFERENCES users (id),
   CONSTRAINT fk_participe_parties FOREIGN KEY (idPartie) REFERENCES parties (idPartie)

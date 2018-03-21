@@ -11,21 +11,12 @@ class GameController implements ControllerProviderInterface{
     private $gameModel;
 
     public function index(Application $app){
-        return $this->playWithOnePlayer($app);
-    }
-
-    public function playWithOnePlayer(Application $app)
-    {
-        return $app["twig"]->render("Game/soloPlayer.html.twig");
+        return $this->playWithTwoPlayer($app);
     }
 
     public function playWithTwoPlayer(Application $app)
     {
         return $app["twig"]->render("Game/duoPlayer.html.twig");
-    }
-
-    public function playToBomberPac(Application $app){
-        return $app["twig"]->render("Game/bomberPac.html.twig");
     }
 
     public function createAGame(Application $app){
@@ -101,9 +92,7 @@ class GameController implements ControllerProviderInterface{
         // TODO: Implement connect() method.
         $index = $app['controllers_factory'];
         $index->match("/", 'App\Controller\GameController::index')->bind('game.index');
-        $index->match("/soloPlayer", 'App\Controller\GameController::playWithOnePlayer')->bind("game.soloPlayer");
         $index->match("/duoPlayer", 'App\Controller\GameController::playWithTwoPlayer')->bind("game.duoPlayer");
-        $index->match("/bomberPac", 'App\Controller\GameController::playToBomberPac')->bind("game.bomberPac");
 
         $index->get("/createGame", 'App\Controller\GameController::createAGame')->bind("game.createGame");
         $index->post("/createGame", 'App\Controller\GameController::validFormCreateGame')->bind("game.validFormCreatePartie");
