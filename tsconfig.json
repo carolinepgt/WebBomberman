@@ -1,0 +1,21 @@
+{
+    "compilerOptions" : {
+        "target": "es5",
+        "pretty": true,
+        "outDir": "./src/javascript"
+    },
+    "files": [
+      "src/typescript/View.ts",
+      "src/typescript/Elem.ts",
+      "src/typescript/Bomberman.ts",
+      "src/typescript/BombermanReseau.ts",
+      "src/typescript/Bombe.ts",
+      "src/typescript/Effet.ts",
+      "src/typescript/Model.ts",
+      "src/typescript/Mur.ts",
+      "src/typescript/Personnage.ts",
+      "src/typescript/Plateau.ts",
+      "src/typescript/SpikeBombe.ts",
+      "src/typescript/Controller.ts"
+    ]
+}

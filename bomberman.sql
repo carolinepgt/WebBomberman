@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
 create table if not exists parties(
   idPartie int(11) not null AUTO_INCREMENT,
   nomPartie varchar(11) not null,
-  etat int(11),
+  etat text,
   nbJoueursAttendus int(11) not null,
   nbJoueursDansPartie int(11) not null,
   primary key(idPartie)
@@ -29,7 +29,7 @@ create table if not exists participe(
   idPartie int(11) not null,
   idJoueur int(11) not null,
   actionPartie VARCHAR(25) not null, /*mettre le numero de joueur + 5 zeros a la creation d'un champ*/
-  nbJoueur int(11) not null, /*a incrementer lors de la creation d'un champ dans la table*/
+  nbJoueur int(11) not null, /*numéro du joueur courant dans la partie*/
   primary key(idPartie,idJoueur),
   CONSTRAINT fk_participe_users FOREIGN KEY (idJoueur) REFERENCES users (id),
   CONSTRAINT fk_participe_parties FOREIGN KEY (idPartie) REFERENCES parties (idPartie)

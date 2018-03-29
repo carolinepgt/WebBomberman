@@ -11,6 +11,7 @@ var Controller = /** @class */ (function () {
         this.changement = [];
         this.messageServeur = "";
         this.ligne = reseau;
+        this.xmlhttp = new XMLHttpRequest();
         for (var i = 0; i < nbJoueur; i++) {
             this.goNorth[i] = false;
             this.goEast[i] = false;
@@ -21,40 +22,31 @@ var Controller = /** @class */ (function () {
         }
         if (this.ligne) {
             this.recupereIdPartie();
-            this.recupereEtat();
+            this.model.tabPerso[0].vitesse = 4;
+            this.model.tabPerso[1].vitesse = 4;
         }
         else
             this.nj = 1;
         this.start();
     }
     Controller.prototype.recupereIdPartie = function () {
-        var _this = this;
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                var m = xmlhttp.responseText.split(",");
-                _this.idPartie = parseInt(m[0]);
-                _this.nbJoueur = parseInt(m[1]);
-                _this.nj = parseInt(m[2]);
-            }
-        };
-        xmlhttp.open("GET", "RecupereId.php", true);
-        xmlhttp.send();
+        this.nj = parseInt(document.getElementById('nj').innerText);
+        this.idPartie = parseInt(document.getElementById('idPartie').innerText);
     };
     Controller.prototype.start = function () {
         var _this = this;
         window.onkeydown = function (event) {
             var key = window.event ? event.keyCode : event.which;
             if (key == 122 || key == 90)
-                _this.goNorth[0] = true;
+                _this.goNorth[_this.nj - 1] = true;
             if (key == 100 || key == 68)
-                _this.goEast[0] = true;
+                _this.goEast[_this.nj - 1] = true;
             if (key == 115 || key == 83)
-                _this.goSouth[0] = true;
+                _this.goSouth[_this.nj - 1] = true;
             if (key == 113 || key == 81)
-                _this.goWest[0] = true;
+                _this.goWest[_this.nj - 1] = true;
             if (key == 32)
-                _this.toucheBombe(0, 0);
+                _this.toucheBombe(_this.nj - 1, 0);
             if (!_this.ligne) {
                 if (key == 38)
                     _this.goNorth[1] = true;
@@ -72,13 +64,13 @@ var Controller = /** @class */ (function () {
         window.onkeyup = function (event) {
             var key = window.event ? event.keyCode : event.which;
             if (key == 122 || key == 90)
-                _this.goNorth[0] = false;
+                _this.goNorth[_this.nj - 1] = false;
             if (key == 100 || key == 68)
-                _this.goEast[0] = false;
+                _this.goEast[_this.nj - 1] = false;
             if (key == 115 || key == 83)
-                _this.goSouth[0] = false;
+                _this.goSouth[_this.nj - 1] = false;
             if (key == 113 || key == 81)
-                _this.goWest[0] = false;
+                _this.goWest[_this.nj - 1] = false;
             if (!_this.ligne) {
                 if (key == 38)
                     _this.goNorth[1] = false;
@@ -144,7 +136,7 @@ var Controller = /** @class */ (function () {
                 elements[x][y] = null;
                 if (element instanceof Mur) {
                     var mur = element;
-                    model.plateau.tabElement[mur.posX][mur.posY] = mur.effet;
+                    this.model.plateau.tabElement[mur.posX][mur.posY] = mur.effet;
                 }
                 if (element.isBombe()) {
                     this.explosionBombe(element);
@@ -156,6 +148,7 @@ var Controller = /** @class */ (function () {
     Gère l'explosion de la bombe: les elements en ligne et à portée de la bombe sont détruit, les joueurs dans cette zone subissent des degats
      */
     Controller.prototype.explosionBombe = function (bombe) {
+        var _this = this;
         bombe.personnage.nbBombeRestantes++;
         var explosion = bombe.explosion(this.model.plateau);
         for (var i = 1; i < explosion[0]; i++)
@@ -166,13 +159,13 @@ var Controller = /** @class */ (function () {
             this.suppressionElement(bombe.posX, bombe.posY + i);
         for (var i = 1; i < explosion[3]; i++)
             this.suppressionElement(bombe.posX - i, bombe.posY);
-        view.explosionsRange.splice(view.explosionsRange.length, 0, explosion);
-        view.explosionBombe.splice(view.explosionBombe.length, 0, bombe);
+        this.view.explosionsRange.splice(this.view.explosionsRange.length, 0, explosion);
+        this.view.explosionBombe.splice(this.view.explosionBombe.length, 0, bombe);
         setTimeout(function () {
-            view.explosionsRange.splice(0, 1);
-            view.explosionBombe.splice(0, 1);
+            _this.view.explosionsRange.splice(0, 1);
+            _this.view.explosionBombe.splice(0, 1);
         }, 200);
-        view.afficheRange(explosion, bombe);
+        this.view.afficheRange(explosion, bombe);
     };
     /*
     Applique un ou les effets présents a l'emplacement du déplacement du personnages,
@@ -200,21 +193,27 @@ var Controller = /** @class */ (function () {
     };
     Controller.prototype.actualiseEtat = function () {
         var message = "";
-        for (var i = 0; i < model.plateau.tabElement.length; i++) {
-            for (var j = 0; j < model.plateau.tabElement.length; j++) {
-                var e = model.plateau.tabElement[i][j];
+        for (var i = 0; i < this.model.plateau.tabElement.length; i++) {
+            for (var j = 0; j < this.model.plateau.tabElement.length; j++) {
+                var e = this.model.plateau.tabElement[i][j];
                 if (e == null)
                     message += "N-";
                 else
                     message += e.toString() + "-";
             }
         }
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "ActualiseEtat.php?idPartie=" + this.idPartie + "&etat=" + message, true);
-        xmlhttp.send();
+        message += "//";
+        for (var i = 0; i < 2; i++) {
+            message += this.model.tabPerso[i].posX + "-";
+            message += this.model.tabPerso[i].posY + "-";
+            message += this.bombe[i] + ",";
+        }
+        this.xmlhttp = new XMLHttpRequest();
+        this.xmlhttp.open("GET", "../../../src/phpAjax/ActualiseEtat.php?idPartie=" + this.idPartie + "&etat=" + message, false);
+        this.xmlhttp.send();
     };
-    Controller.toObject = function (x, y, s) {
-        var tabE = model.plateau.tabElement;
+    Controller.prototype.toObject = function (x, y, s) {
+        var tabE = (this.model.plateau.tabElement);
         if (s == "N") {
             tabE[x][y] = null;
             return;
@@ -232,21 +231,31 @@ var Controller = /** @class */ (function () {
         }
     };
     Controller.prototype.recupereEtat = function () {
+        var _this = this;
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 var rep = xmlhttp.responseText;
-                var m = rep.split("-");
-                var taille = model.plateau.tabElement.length;
+                var mm = rep.split("//");
+                var m = mm[0].split("-");
+                var taille = _this.model.plateau.tabElement.length;
                 for (var i = 0; i < taille; i++) {
                     for (var j = 0; j < taille; j++) {
-                        Controller.toObject(i, j, m[i * taille + j]);
+                        _this.toObject(i, j, m[i * taille + j]);
                     }
                 }
-                view.afficheVue();
+                m = mm[1].split(",");
+                for (var i = 0; i < 2; i++) {
+                    var s = m[i].split("-");
+                    _this.model.tabPerso[i].posX = parseInt(s[0]);
+                    _this.model.tabPerso[i].posY = parseInt(s[1]);
+                    if (parseInt(s[2]) == 1)
+                        _this.toucheBombe(i, 0);
+                }
+                _this.view.afficheVue();
             }
         };
-        xmlhttp.open("GET", "RecupereEtat.php?idPartie=" + this.idPartie, true);
+        xmlhttp.open("GET", "../../../../src/phpAjax/RecupereEtat.php?idPartie=" + this.idPartie, false);
         xmlhttp.send();
     };
     Controller.prototype.recupereAction = function () {
@@ -255,44 +264,47 @@ var Controller = /** @class */ (function () {
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 var rep = xmlhttp.responseText.split(",");
-                for (var i = 0; i < rep.length; i++) {
+                for (var i = 1; i < 2; i++) {
                     var m = rep[i];
-                    var n = parseInt("" + m[0]);
-                    _this.goNorth[n] = m[1] == '1';
-                    _this.goEast[n] = m[2] == '1';
-                    _this.goSouth[n] = m[3] == '1';
-                    _this.goWest[n] = m[4] == '1';
-                    _this.bombe[n] = m[5] == '1';
+                    console.log(m);
+                    _this.goNorth[i] = m[1] == '1';
+                    _this.goEast[i] = m[2] == '1';
+                    _this.goSouth[i] = m[3] == '1';
+                    _this.goWest[i] = m[4] == '1';
+                    if (m[5] == '1')
+                        _this.toucheBombe(i, 0);
                 }
             }
         };
-        xmlhttp.open("GET", "RecupereAction.php?idPartie=" + this.idPartie, true);
+        xmlhttp.open("GET", "../../../src/phpAjax/RecupereAction.php?idPartie=" + this.idPartie, false);
         xmlhttp.send();
     };
     Controller.prototype.actualiseAction = function () {
         var message = "" + this.nj;
-        if (this.goNorth[this.nj])
+        if (this.goNorth[this.nj - 1])
             message += 1;
         else
             message += 0;
-        if (this.goEast[this.nj])
+        if (this.goEast[this.nj - 1])
             message += 1;
         else
             message += 0;
-        if (this.goSouth[this.nj])
+        if (this.goSouth[this.nj - 1])
             message += 1;
         else
             message += 0;
-        if (this.goWest[this.nj])
+        if (this.goWest[this.nj - 1])
             message += 1;
         else
             message += 0;
-        if (this.bombe[this.nj])
+        if (this.bombe[this.nj - 1]) {
             message += 1;
+            this.bombe[this.nj - 1] = false;
+        }
         else
             message += 0;
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "ActualiseAction.php?idPartie=" + this.idPartie + "&nj=" + this.nj + "&action=" + message, true);
+        xmlhttp.open("GET", "../../../../src/phpAjax/ActualiseAction.php?idPartie=" + this.idPartie + "&nj=" + this.nj + "&action=" + message, false);
         xmlhttp.send();
     };
     return Controller;

@@ -15,8 +15,8 @@ class GameModel{
     {
         try{
             $this->db->beginTransaction();
-            $this->db->query("INSERT INTO parties (nomPartie,etat,nbJoueursAttendus,nbJoueursDansPartie) VALUES ('".$donnees['nomPartie']."',
-            null,'".$donnees['nbJoueursAttendus']."',1);");
+            $this->db->query("INSERT INTO parties (nomPartie,etat,nbJoueursAttendus,nbJoueursDansPartie) VALUES ('".$donnees['nomPartie']."','MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-N-N-M0-M0-M0-M0-M0-M0-M0-M1-M0-M0-M0-M0-M0-MI-MI-N-MI-M5-MI-M1-MI-M2-MI-M0-MI-M1-MI-M2-MI-M0-MI-MI-M0-M0-M0-M0-M0-M0-M2-M0-M0-M0-M5-M0-M4-M4-M0-MI-MI-M5-MI-M0-MI-M5-MI-M0-MI-M0-MI-M1-MI-M2-MI-M3-MI-MI-M0-M4-M0-M0-M0-M5-M0-M0-M0-M0-M3-M5-M0-M0-M0-MI-MI-M0-MI-M4-MI-M0-MI-M0-MI-M0-MI-M5-MI-M0-MI-M0-MI-MI-M1-M2-M0-M0-M2-M2-M1-M0-M0-M0-M3-M0-M4-M0-M3-MI-MI-M4-MI-M4-MI-M0-MI-M0-MI-M0-MI-M5-MI-M0-MI-M0-MI-MI-M0-M0-M4-M5-M2-M0-M5-M0-M0-M4-M0-M0-M0-M0-M0-MI-MI-M0-MI-M0-MI-M0-MI-M0-MI-M0-MI-M0-MI-M1-MI-M0-MI-MI-M0-M0-M0-M0-M0-M0-M0-M5-M0-M2-M2-M0-M3-M0-M0-MI-MI-M0-MI-M0-MI-M0-MI-M0-MI-M0-MI-M0-MI-M2-MI-M0-MI-MI-M0-M0-M0-M0-M0-M0-M0-M0-M5-M0-M0-M4-M3-M0-M0-MI-MI-M0-MI-M2-MI-M2-MI-M0-MI-M4-MI-M0-MI-M2-MI-N-MI-MI-M0-M0-M0-M2-M0-M0-M0-M0-M0-M0-M4-M0-M2-N-N-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-MI-//35-35-false,525-525-false,'
+            ,'".$donnees['nbJoueursAttendus']."',1);");
 
             $maxID = $this->db->prepare("SELECT max(idPartie) from parties");
             $maxID->execute();
@@ -116,6 +116,15 @@ class GameModel{
             ->where('idPartie='.$idPartie);
 
         return $queryBuilder->execute()->fetch();
+    }
+
+    public function getIdPartie(){
+        $this->db->beginTransaction();
+
+        $maxID = $this->db->prepare("SELECT max(idPartie) from parties");
+        $maxID->execute();
+        $max = $maxID->fetch();
+        return $max['max(idPartie)'];
     }
 
 }

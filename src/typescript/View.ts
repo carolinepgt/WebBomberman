@@ -20,21 +20,21 @@ class View{
         for (let i = 0; i < 8; i++) {
             this.images[i]=new Image();
         }
-        this.images[0].src = "./images/murCassable.jpg";
-        this.images[1].src = "./images/Mur2.png";
-        this.images[2].src = "./images/bomb.png";
-        this.images[3].src = "./images/portee30_30.png";
-        this.images[4].src = "./images/bonusBombe30_30.png";
-        this.images[5].src = "./images/vie30_30.png";
-        this.images[6].src = "./images/sonic30_30.png";
-        this.images[7].src = "./images/penetrator30_30.png";
+        this.images[0].src = document.location.href+"/../../../../images/murCassable.jpg";
+        this.images[1].src = document.location.href+"/../../../../images/Mur2.png";
+        this.images[2].src = document.location.href+"/../../../../images/bomb.png";
+        this.images[3].src = document.location.href+"/../../../../images/portee30_30.png";
+        this.images[4].src = document.location.href+"/../../../../images/bonusBombe30_30.png";
+        this.images[5].src = document.location.href+"/../../../../images/vie30_30.png";
+        this.images[6].src = document.location.href+"/../../../../images/sonic30_30.png";
+        this.images[7].src = document.location.href+"/../../../../images/penetrator30_30.png";
 
         this.imagesExplo = [];
         for (let i = 0; i < 7; i++) {
             this.imagesExplo[i]=new Image();
-            this.imagesExplo[i].src = "images/ExplosionOrange"+i+".png";
+            this.imagesExplo[i].src = document.location.href+"/../../../../images/ExplosionOrange"+i+".png";
         }
-        this.imagesExplo[0].src = "images/ExplosionOrange0.jpg";
+        this.imagesExplo[0].src = document.location.href+"/../../../../images/ExplosionOrange0.jpg";
 
         this._explosionsRange=[];
         this._explosionBombe=[];
@@ -42,7 +42,7 @@ class View{
         let elements :Elem[][] = this.model.plateau.tabElement;
         let ctx = this.canvas.getContext('2d');
         let elemSize=Model.elemSize;
-        let size=model.plateau.tabElement.length;
+        let size=this.model.plateau.tabElement.length;
         for (let i=0; i<size; i++){
             for (let j=0; j<size; j++){
                 let element :Elem=elements[i][j];
@@ -73,7 +73,7 @@ class View{
         let elements: Elem[][] = this.model.plateau.tabElement;
         let ctx = this.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        let size=model.plateau.tabElement.length;
+        let size=this.model.plateau.tabElement.length;
         let elemSize=Model.elemSize;
         for (let i=0; i<size; i++){
             for (let j=0; j<size; j++){

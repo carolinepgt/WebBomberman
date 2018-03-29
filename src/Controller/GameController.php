@@ -5,6 +5,7 @@ use App\Model\GameModel;
 use Silex\Application;
 use Silex\Api\ControllerProviderInterface;
 use Silex\ControllerCollection;
+use function Sodium\add;
 use Symfony\Component\HttpFoundation\Request;
 
 class GameController implements ControllerProviderInterface{
@@ -42,13 +43,17 @@ class GameController implements ControllerProviderInterface{
                 $this->gameModel = new GameModel($app);
                 $gameModel = $this->gameModel->addPartie($donnees,$user);
                 $nbJoueursInPartie = $this->gameModel->getJoueursDansPartie($gameModel);
+                $donne=array(
+                    'nj'=>$nbJoueursInPartie['nbJoueursDansPartie'],
+                    'idPartie'=>$gameModel
+                );
 
                 while($nbJoueursInPartie['nbJoueursDansPartie']<$nbJoueursInPartie['nbJoueursAttendus']){
                     $nbJoueursInPartie = $this->gameModel->getJoueursDansPartie($gameModel);
                 }
 
                 //retour par défaut à modifier lors du lancement de la partie
-                return $app->redirect($app["url_generator"]->generate("game.showAllParties"));
+                return $app["twig"]->render('Game/game.html.twig',['donne'=>$donne]);
             }
         }
         else
@@ -62,14 +67,18 @@ class GameController implements ControllerProviderInterface{
         return $app["twig"]->render('Game/allParties.html.twig',['donnees'=>$gameModel]);
     }
 
+
     public function goInPartie(Application $app,$idPartie){
         $user = $app['session']->get('user_id');
         $this->gameModel = new GameModel($app);
         $this->gameModel->rejoindrePartie($idPartie,$user);
         $nbJoueursInPartie = $this->gameModel->getJoueursDansPartie($idPartie);
         $this->gameModel->updateParties($nbJoueursInPartie['nbJoueursDansPartie'],$idPartie);
-
         $nbJoueursInPartie = $this->gameModel->getJoueursDansPartie($idPartie);
+        $donne=array(
+            'nj'=>$nbJoueursInPartie['nbJoueursDansPartie'],
+            'idPartie'=>$this->gameModel->getIdPartie()
+        );
         $etatPartie = $this->gameModel->getEtatPartie($idPartie);
 
         while($nbJoueursInPartie['nbJoueursDansPartie']<$nbJoueursInPartie['nbJoueursAttendus'] && $etatPartie['etat'] == null){
@@ -77,7 +86,7 @@ class GameController implements ControllerProviderInterface{
             $etatPartie = $this->gameModel->getEtatPartie($idPartie);
         }
         //retour par défaut à modifier pour lancer une partie
-        return $app->redirect($app["url_generator"]->generate("game.showAllParties"));
+        return $app["twig"]->render('Game/game.html.twig',['donne'=>$donne]);
     }
 
     /**

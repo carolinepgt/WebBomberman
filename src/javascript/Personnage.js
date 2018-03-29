@@ -15,7 +15,8 @@ var Personnage = /** @class */ (function () {
         this._images = [];
         for (var i = 0; i < 4; i++) {
             this._images[i] = new Image();
-            this._images[i].src = "./images/SKF_" + couleur + (i + 1) + ".PNG";
+            this._images[i].src = "../../images/SKF_" + couleur + (i + 1) + ".PNG";
+            this._images[i].src = document.location.href + "/../../../../images/SKF_" + couleur + (i + 1) + ".PNG";
         }
     }
     Object.defineProperty(Personnage.prototype, "vitesse", {

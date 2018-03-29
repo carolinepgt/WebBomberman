@@ -7,13 +7,13 @@
             <caption>Toutes les parties</caption>
             <thead>
             <tr>
-                <th>ID de la partie</th><th>Nom de la partie</th><th>Etat de la partie</th><th>Nombre de joueurs attendus dans la partie</th><th>Nombre de joueurs dans la partie</th>
+                <th>ID de la partie</th><th>Nom de la partie</th><th>Nombre de joueurs attendus dans la partie</th><th>Nombre de joueurs dans la partie</th>
             </tr>
             </thead>
             <tbody>
             {% for parties in donnees if donnees is not empty %}
                 <tr>
-                    <td>{{parties.idPartie}}</td><td>{{parties.nomPartie}}</td><td>{{parties.etat}}</td>
+                    <td>{{parties.idPartie}}</td><td>{{parties.nomPartie}}</td>
                     <td>{{parties.nbJoueursAttendus}}</td><td>{{parties.nbJoueursDansPartie}}</td>
                     {% if parties.nbJoueursAttendus == parties.nbJoueursDansPartie %}
                         <td style="color: red">Partie complète</td>
